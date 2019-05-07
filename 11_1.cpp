@@ -1,6 +1,7 @@
 #include <iostream>
+#include <iomanip>
 #include <cstdint>
-#include <map>
+#include <vector>
 
 using namespace std;
 
@@ -17,17 +18,22 @@ int main(void) {
     return 1;
   }
 
-  // FIXME: ソートしたくない…
-  map<uint16_t, char> tbl = {{1000, 'M'},
-                             {500,  'D'},
-                             {100,  'C'},
-                             {50,   'L'},
-                             {10,   'X'},
-                             {5,    'V'},
-                             {1,    'I'}};
+  vector<tuple<uint16_t, char>> tbl = {{1000, 'M'},
+                                       {500,  'D'},
+                                       {100,  'C'},
+                                       {50,   'L'},
+                                       {10,   'X'},
+                                       {5,    'V'},
+                                       {1,    'I'}};
   for (auto elm : tbl) {
-    cout << elm.first << " " << elm.second << endl;
+    const uint16_t val = get<0>(elm);
+    const char c       = get<1>(elm);
+    const uint8_t n    = N / val;
+    cout << setw(n) << setfill(c) << "";
+    N %= val;
   }
+  cout << endl;
+
   return 0;
 }
 
