@@ -19,6 +19,15 @@ class array2d {
     }
   }
 
+  size_t size(int i) const {
+    assert(i == 1 || i == 2);
+    if (i == 1) {
+      return h;
+    } else {
+      return w;
+    }
+  }
+
   void print(int n = 1) {
     for (auto i = 0; i < h; i++) {
       for (auto j = 0; j < w; j++) {
@@ -26,6 +35,11 @@ class array2d {
       }
       cout << endl;
     }
+  }
+
+  // 👇 関数呼び出し演算子
+  T& operator()(int i, int j) {
+    return value[i][j];
   }
 
   private:
@@ -37,11 +51,12 @@ int main() {
   // 要素アクセス
   array2d<int, 2, 3> a {1, 2, 3, 4, 5, 6}; // 👈 初期化子リスト
   a.print();
-  /*
   for (size_t i = 0; i < a.size(1); ++i)
     for (size_t j = 0; j < a.size(2); ++j)
       a(i, j) *= 2;
+  a.print();
 
+  /*
   // イテレーション
   std::copy(std::cbegin(a), std::cend(a),
     std::ostream_iterator<int>(std::cout, " "));
