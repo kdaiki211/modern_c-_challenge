@@ -42,8 +42,17 @@ class array2d {
     return value[i][j];
   }
 
+  // イテレータ用の色々
+  // 参考文献: http://program.station.ez-net.jp/special/handbook/cpp/stl/iterator-make.asp
+  // const_iterator cbegin() const {
+  //   return &value[0][0];
+  // }
+
+  // const_iterator cend() const {
+  //   return &value[w-1][h]
+
   private:
-  T value[w][h];
+  T value[h][w];
 };
 
 // テストケースはほぼほぼ丸コピ👌
@@ -56,11 +65,11 @@ int main() {
       a(i, j) *= 2;
   a.print();
 
-  /*
   // イテレーション
-  std::copy(std::cbegin(a), std::cend(a),
-    std::ostream_iterator<int>(std::cout, " "));
+  // std::copy(std::cbegin(a), std::cend(a),
+  //   std::ostream_iterator<int>(std::cout, " "));
 
+  /*
   // フィリング
   array2d<int, 2, 3> b;
   b.fill(1);
