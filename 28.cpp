@@ -17,8 +17,7 @@ string get_max_palindrome(string str)
       auto e = e0;
       while (s <= e && str[s] == str[e])
       {
-        s++; e--;
-      }
+        s++; e--; }
       if (s > e)
       {
         string candidate = str.substr(s0, e0 - s0 + 1);
@@ -37,4 +36,6 @@ int main(void)
 {
   // http://www.guinnessworldrecords.com/world-records/longest-palindromic-word
   cout << "\"" << get_max_palindrome("i went to saippuakivikauppias yesterday") << "\"" << endl;
+  cout << "\"" << get_max_palindrome("abc") << "\"" << endl;
+  cout << "\"" << get_max_palindrome("") << "\"" << endl;
 }
