@@ -10,8 +10,6 @@ size_t getSizeOfDirectory(string dir, bool followSymlink)
     if (item.is_directory()) {
       if (!followSymlink && item.is_symlink()) continue;
       sz += getSizeOfDirectory(item.path(), followSymlink);
-    // } else if (followSymlink && item.is_symlink()) {
-    //   sz += getSizeOfDirectory(filesystem::read_symlink(item.path()), followSymlink);
     } else {
       sz += item.file_size();
     }
