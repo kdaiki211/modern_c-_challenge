@@ -11,3 +11,8 @@ int main(void)
   cout << abs(sys_days{date2} - sys_days{date1}) << endl;
   cout << abs(sys_days{date1} - sys_days{date2}) << endl;
 }
+
+/*
+388d
+388d
+*/

@@ -23,3 +23,8 @@ int main(void)
   cout << get_nth_day(d) << endl;
   cout << get_nth_week(d) << endl;
 }
+
+/*
+183
+27
+*/

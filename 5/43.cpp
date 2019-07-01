@@ -19,3 +19,9 @@ int main(void)
     std::cout << "local time (" << tz << ") : " << local_tm << endl;
   }
 }
+
+/*
+time in Japan : 1978-12-30 12:01:00 JST
+local time (America/New_York) : 1978-12-29 22:01:00 EST
+local time (Asia/Tehran) : 1978-12-30 07:01:00 +04
+*/

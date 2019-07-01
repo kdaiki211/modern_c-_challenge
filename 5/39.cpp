@@ -60,3 +60,18 @@ int main(void) {
   test<chrono::microseconds>();
   test<chrono::nanoseconds>();
 }
+
+/*
+time = 0 s
+time = 0 s
+time = 0 s
+time = 12 ms
+time = 22 ms
+time = 35 ms
+time = 12140 us
+time = 20328 us
+time = 32145 us
+time = 12573415 ns
+time = 24841270 ns
+time = 30079782 ns
+*/
