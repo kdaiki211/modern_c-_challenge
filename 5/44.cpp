@@ -1,8 +1,8 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
-#include "../external/date/include/date/date.h"
-#include "../external/date/include/date/iso_week.h"
+#include "date/date.h"
+#include "date/iso_week.h"
 
 using namespace std;
 using namespace date;
