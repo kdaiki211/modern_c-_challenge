@@ -1,0 +1,15 @@
+DDSNs-MacBook-Pro:8 dkomax61$ ./67
+Enter password: a       
+Invalid.
+DDSNs-MacBook-Pro:8 dkomax61$ ./67
+Enter password: hogefuga
+Invalid.
+DDSNs-MacBook-Pro:8 dkomax61$ ./67
+Enter password: hogefuga1
+Invalid.
+DDSNs-MacBook-Pro:8 dkomax61$ ./67
+Enter password: hogefuga1A
+Invalid.
+DDSNs-MacBook-Pro:8 dkomax61$ ./67
+Enter password: hogefuga1A!
+Valid.
