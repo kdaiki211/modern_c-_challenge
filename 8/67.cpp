@@ -14,107 +14,102 @@ string InputPassword(void)
   return password;
 }
 
-enum class PasswordValidationMethod {
-  Length,
-  Symbol,
-  Number,
-  LowerCase,
-  UpperCase
+class Checker {
+public:
+  virtual bool isSatisfied(string password) = 0;
 };
 
-const size_t MinimumPasswordLength = 8;
-bool ValidatePasswordLength(const string password)
-{
-  return password.length() >= MinimumPasswordLength;
-}
+class LengthChecker : public Checker {
+public:
+  LengthChecker(size_t minCnt) : minCnt(minCnt) {}
+  bool isSatisfied(string password) override {
+    return password.length() >= minCnt;
+  }
+protected:
+  size_t minCnt;
+};
 
-const size_t MinimumSymbolLength = 1;
-vector<string> Symbols { "!", "\"", "#", "$", "%", "&", "'", "(", ")", "-", "=", "^", "~", "\\", "|", "@", "`", "[", "{", "]", "}", ";", "+", ":", "*", ",", "<", ".", ">", "/", "?", "_" };
-bool ValidateSymbol(const string password)
-{
-  size_t cnt = 0;
-  for (auto s : Symbols) {
-    if (password.find(s) != string::npos) {
-      cnt++;
+class ContainsNCharactersChecker : public Checker {
+public:
+  ContainsNCharactersChecker(size_t minCnt) : minCnt(minCnt) {}
+  bool isSatisfied(string password) override {
+    size_t cnt = 0;
+    for (auto c : password) {
+      if (isValidChar(c)) cnt++;
+      if (cnt >= minCnt) return true;
     }
+    return false;
   }
-  return cnt >= MinimumSymbolLength;
-}
-
-const size_t MinimumNumberLength = 1;
-bool ValidateNumber(const string password)
-{
-  size_t cnt = 0;
-  for (auto c : password) {
-    if (isdigit(c)) cnt++;
-    if (cnt >= MinimumNumberLength) return true;
-  }
-  return false;
-}
-
-const size_t MinimumLowerCaseLength = 1;
-bool ValidateLowerCase(const string password)
-{
-  size_t cnt = 0;
-  for (auto c : password) {
-    if (islower(c)) cnt++;
-    if (cnt >= MinimumLowerCaseLength) return true;
-  }
-  return false;
-}
-
-const size_t MinimumUpperCaseLength = 1;
-bool ValidateUpperCase(const string password)
-{
-  size_t cnt = 0;
-  for (auto c : password) {
-    if (isupper(c)) cnt++;
-    if (cnt >= MinimumUpperCaseLength) return true;
-  }
-  return false;
-}
-
-map<PasswordValidationMethod, string> pvmExplanation = {
-  { PasswordValidationMethod::Length,
-    "Length must be >= " + to_string(MinimumPasswordLength) },
-  { PasswordValidationMethod::Symbol,
-    "Length of symbols must be >= " + to_string(MinimumSymbolLength) },
-  { PasswordValidationMethod::Number,
-    "Length of numbers must be >= " + to_string(MinimumNumberLength) },
-  { PasswordValidationMethod::LowerCase,
-    "Length of lower cases must be >= " + to_string(MinimumLowerCaseLength) },
-  { PasswordValidationMethod::UpperCase,
-    "Length of upper cases must be >= " + to_string(MinimumUpperCaseLength) }
+protected:
+  size_t minCnt;
+  virtual bool isValidChar(char c) = 0;
 };
 
-using PasswordValidationFunc = bool (*)(const string);
-
-map<PasswordValidationMethod, PasswordValidationFunc> pvmFunc = {
-  { PasswordValidationMethod::Length, ValidatePasswordLength },
-  { PasswordValidationMethod::Symbol, ValidateSymbol },
-  { PasswordValidationMethod::Number, ValidateNumber },
-  { PasswordValidationMethod::LowerCase, ValidateLowerCase },
-  { PasswordValidationMethod::UpperCase, ValidateUpperCase }
+class ContainsNSymbolsChecker : public ContainsNCharactersChecker {
+public:
+  ContainsNSymbolsChecker(size_t minCnt) : ContainsNCharactersChecker(minCnt) {}
+protected:
+  bool isValidChar(char c) override {
+    return find(symbols.begin(), symbols.end(), c) != symbols.end();
+  }
+  vector<char> symbols { '!', '\'', '#', '$', '%', '&', '\'', '(', ')', '-', '=', '^', '~', '\\', '|', '@', '`', '[', '{', ']', '}', ';', '+', ':', '*', ',', '<', '.', '>', '/', '?', '_' };
 };
 
-bool ValidatePassword(const string password, vector<PasswordValidationMethod>& reason)
-{
-  bool isValid = true;
-  for (auto f : pvmFunc ) {
-    bool ret = f.second(password);
-    isValid &= ret;
-    if (!ret) {
-      reason.push_back(f.first);
+class ContainsNNumbersChecker : public ContainsNCharactersChecker {
+public:
+  ContainsNNumbersChecker(size_t minCnt) : ContainsNCharactersChecker(minCnt) {}
+protected:
+  bool isValidChar(char c) override {
+    return isdigit(c);
+  }
+};
+
+class ContainsNLowerCasesChecker : public ContainsNCharactersChecker {
+public:
+  ContainsNLowerCasesChecker(size_t minCnt) : ContainsNCharactersChecker(minCnt) {}
+protected:
+  bool isValidChar(char c) override {
+    return islower(c);
+  }
+};
+
+class ContainsNUpperCasesChecker : public ContainsNCharactersChecker {
+public:
+  ContainsNUpperCasesChecker(size_t minCnt) : ContainsNCharactersChecker(minCnt) {}
+protected:
+  bool isValidChar(char c) override {
+    return isupper(c);
+  }
+};
+
+class PasswordValidator {
+public:
+  void addChecker(Checker* checker) {
+    this->checker.push_back(checker);
+  }
+  bool isValid(string password) {
+    for (auto c : checker) {
+      if (!c->isSatisfied(password)) return false;
     }
+    return true;
   }
-  return isValid;
-}
+private:
+  vector<Checker*> checker;
+};
 
-void ShowReasonsForInvalid(vector<PasswordValidationMethod>& reason)
+static void initMyValidator(PasswordValidator& validator)
 {
-  for (auto r : reason) {
-    cout << pvmExplanation[r] << endl;
-  }
+  static LengthChecker lengthChecker(8);
+  static ContainsNSymbolsChecker containsNSymbolsChecker(1);
+  static ContainsNNumbersChecker containsNNumbersChecker(1);
+  static ContainsNLowerCasesChecker containsNLowerCasesChecker(1);
+  static ContainsNUpperCasesChecker containsNUpperCasesChecker(1);
+
+  validator.addChecker(&lengthChecker);
+  validator.addChecker(&containsNSymbolsChecker);
+  validator.addChecker(&containsNNumbersChecker);
+  validator.addChecker(&containsNLowerCasesChecker);
+  validator.addChecker(&containsNUpperCasesChecker);
 }
 
 int main(void)
@@ -122,14 +117,13 @@ int main(void)
   cout << "Enter password: ";
   string password = InputPassword();
 
-  vector<PasswordValidationMethod> reason;
-  bool isValidPassword = ValidatePassword(password, reason);
+  PasswordValidator validator;
+  initMyValidator(validator);
 
-  if (isValidPassword) {
+  if (validator.isValid(password)) {
     cout << "Valid." << endl;
   } else {
     cout << "Invalid." << endl;
-    ShowReasonsForInvalid(reason);
   }
   return 0;
 }
