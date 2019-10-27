@@ -37,3 +37,10 @@ int main(void)
     cout << decodedText << endl;
     return 0;
 }
+
+/*
+ * 実行結果
+ * HELLO, WORLD!
+ * KHOOR, ZRUOG!
+ * HELLO, WORLD! 
+ */
