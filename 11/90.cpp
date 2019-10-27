@@ -63,3 +63,8 @@ int main(void)
     cout << base64((const uint8_t* const)sampleText.c_str(), sampleText.length()) << endl;
     return 0;
 }
+
+/*
+ * 実行結果
+ * QUJDREVGRw==
+ */
